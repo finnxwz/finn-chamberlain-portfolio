@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#111111">
+  <title>Fotos hochladen — Finn Chamberlain</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../gallery.css">
+  <script src="../config.js" defer></script>
+  <script src="../local-hint.js" defer></script>
+  <script type="module" src="admin.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="wordmark" href="../../index.html">finn chamberlain<span>cinematic photography</span></a>
+    <nav aria-label="Hauptnavigation"><a href="../../index.html">Portfolio</a><a href="../">Galerie</a><a href="./" aria-current="page">Upload</a></nav>
+  </div></header>
+  <main id="main" class="page gallery-page">
+    <div class="series-heading"><h1>Galerie verwalten</h1><p>Upload</p></div>
+    <noscript><p>Bitte aktiviere JavaScript, um Fotos hochzuladen.</p></noscript>
+    <div class="admin-intro"><h2>Neue Fotos veröffentlichen.</h2><p>Verbinde dich mit deinem GitHub-Repository. Nach dem Upload erstellt GitHub die Galerie und den ZIP-Download automatisch neu. Die Veröffentlichung dauert in der Regel einige Minuten.</p></div>
+    <form id="connect-form" class="gallery-form admin-connect" autocomplete="off">
+      <label for="repository">GitHub-Repository</label>
+      <input id="repository" type="text" placeholder="benutzername/portfolio" required autocapitalize="none" spellcheck="false">
+      <label for="github-token">GitHub-Zugriffstoken</label>
+      <input id="github-token" type="password" autocomplete="off" required aria-describedby="token-help connect-status">
+      <p id="token-help" class="form-help">Ein Fine-grained Token für dieses Repository mit „Contents: Read and write“ genügt. Der Token bleibt nur während dieser Verbindung im Arbeitsspeicher. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Token bei GitHub erstellen</a></p>
+      <button class="solid-button" type="submit">Mit GitHub verbinden</button>
+      <p id="connect-status" class="status-message" role="status"></p>
+    </form>
+    <section id="uploader" hidden aria-label="Fotos hochladen">
+      <div class="gallery-toolbar"><div><h2>Verbunden</h2><p id="connected-repo" class="muted-copy"></p></div><button id="disconnect" class="text-button" type="button">Verbindung trennen</button></div>
+      <div id="upload-zone" class="upload-zone">
+        <label for="photo-files">Fotos auswählen oder hierher ziehen</label>
+        <input id="photo-files" type="file" accept=".jpg,.jpeg,.png,.webp" multiple>
+        <p>JPG, PNG oder WebP · maximal 20 MB pro Foto · bis zu 100 Fotos pro Upload.<br>Neue Bilder werden hinzugefügt. Vorhandene Fotos werden nicht überschrieben.</p>
+      </div>
+      <ul id="file-list" class="upload-files" aria-label="Ausgewählte Dateien"></ul>
+      <p id="selection-status" class="status-message" role="status"></p>
+      <progress id="upload-progress" class="upload-progress" value="0" max="1" aria-label="Upload-Fortschritt" hidden></progress>
+      <div class="upload-actions"><button id="upload-button" class="solid-button" type="button" disabled>Fotos veröffentlichen</button><button id="clear-selection" class="text-button" type="button" disabled>Auswahl leeren</button></div>
+      <p id="upload-status" class="status-message" role="status"></p>
+      <div id="result-links" class="result-links" hidden><a id="workflow-link" target="_blank" rel="noopener noreferrer">Veröffentlichung bei GitHub prüfen</a><a href="../" target="_blank" rel="noopener noreferrer">Galerie öffnen</a><a id="commit-link" target="_blank" rel="noopener noreferrer" hidden>Upload im Repository ansehen</a></div>
+    </section>
+  </main>
+  <footer class="site-footer"><span>Finn Chamberlain · Galerieverwaltung</span><a href="../">Zur Galerie</a></footer>
+</body>
+</html>

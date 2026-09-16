@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#111111">
+  <title>Galerie — Finn Chamberlain</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="gallery.css?v=sidebar-2">
+  <script src="config.js" defer></script>
+  <script src="local-hint.js" defer></script>
+  <script type="module" src="gallery.mjs?v=sidebar-2"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="wordmark" href="../index.html">finn chamberlain<span>cinematic photography</span></a>
+    <nav aria-label="Hauptnavigation"><a href="../index.html">Portfolio</a><a href="../about.html#kontakt">Kontakt</a><a href="./" aria-current="page">Galerie</a></nav>
+  </div></header>
+  <main id="main" class="page gallery-page customer-gallery-page">
+    <div class="series-heading"><h1>Galerie</h1><p>Finn Chamberlain</p></div>
+    <noscript><p class="message">Bitte aktiviere JavaScript, um die Galerie zu öffnen.</p></noscript>
+    <section id="gate" class="gallery-gate" aria-labelledby="gate-title">
+      <p class="form-eyebrow">Deine Fotografien</p>
+      <h2 id="gate-title">Willkommen in der Galerie.</h2>
+      <p>Gib das Galeriepasswort ein, um die Bilder anzusehen und herunterzuladen.</p>
+      <form id="password-form" class="gallery-form">
+        <label for="gallery-password">Passwort</label>
+        <input id="gallery-password" type="password" autocomplete="current-password" required aria-describedby="login-status">
+        <button class="solid-button" type="submit">Galerie öffnen</button>
+        <p id="login-status" class="status-message" role="status"></p>
+      </form>
+    </section>
+    <section id="collection" class="gallery-layout" hidden aria-label="Fotogalerie">
+      <aside class="gallery-sidebar" aria-labelledby="sidebar-title">
+        <button id="close-sidebar" class="text-button drawer-close" type="button" hidden>Schließen ×</button>
+        <p class="form-eyebrow">Für dich bereitgestellt</p>
+        <h2 id="sidebar-title">Deine Galerie.</h2>
+        <dl class="gallery-facts">
+          <div class="gallery-count-row"><dt>Fotografien</dt><dd id="photo-count">—</dd></div>
+          <div><dt>Gesamtgröße</dt><dd id="total-size">—</dd></div>
+          <div><dt>ZIP-Download</dt><dd id="archive-size">—</dd></div>
+          <div><dt>Dateiformate</dt><dd id="photo-formats">—</dd></div>
+          <div><dt>Dateigrößen</dt><dd id="file-size-range">—</dd></div>
+          <div><dt>Stand der Galerie</dt><dd><time id="gallery-updated">—</time></dd></div>
+        </dl>
+        <a id="download-all" class="solid-button" download="Finn-Chamberlain-Galerie.zip" hidden><span>Alle herunterladen ↓</span><span class="button-note">ZIP</span></a>
+        <p id="download-help" class="sidebar-help" hidden>Alle bereitgestellten Originaldateien in einer ZIP. Nach dem Download die ZIP-Datei entpacken.</p>
+        <div class="sidebar-guide"><h3>Einzelne Bilder</h3><p>Ein Foto anklicken, um es vollständig anzusehen und einzeln herunterzuladen. Mit den Pfeiltasten wechselst du zwischen den Bildern.</p></div>
+        <div class="sidebar-actions"><button id="refresh-gallery" class="text-button" type="button">Aktualisieren</button><button id="lock-gallery" class="text-button" type="button">Abmelden</button></div>
+        <a class="sidebar-contact" href="../about.html#kontakt">Fragen zu deinen Fotos? Kontakt ↗</a>
+      </aside>
+      <div class="gallery-content">
+        <button id="open-sidebar" class="solid-button mobile-sidebar-button" type="button" aria-haspopup="dialog" aria-controls="gallery-drawer">Downloads &amp; Galerie-Infos</button>
+        <div class="collection-heading"><h2>Alle Fotografien</h2><p>Zum Vergrößern anklicken</p></div>
+        <p id="gallery-status" class="status-message" role="status"></p>
+        <div id="empty-gallery" class="empty-state" hidden><h3>Noch keine Fotos.</h3><p>Sobald die ersten Bilder veröffentlicht sind, erscheinen sie hier.</p></div>
+        <div id="photo-grid" class="customer-grid"></div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><span>Finn Chamberlain · Fotografie</span><a href="../about.html#kontakt">Kontakt</a></footer>
+  <dialog id="gallery-drawer" class="gallery-drawer" aria-labelledby="sidebar-title"></dialog>
+  <dialog id="photo-viewer" class="photo-viewer" aria-label="Vergrößerte Bildansicht">
+    <div class="viewer-toolbar"><div><span id="viewer-counter"></span><p id="viewer-meta" class="viewer-meta"></p></div><button id="close-viewer" class="text-button" type="button" autofocus>Schließen ×</button></div>
+    <div class="viewer-stage"><img id="viewer-image" alt=""></div>
+    <div class="viewer-footer">
+      <button id="previous-photo" class="text-button" type="button" aria-label="Vorheriges Foto">← Zurück</button>
+      <a id="download-photo" class="text-button" download>Foto herunterladen</a>
+      <button id="next-photo" class="text-button" type="button" aria-label="Nächstes Foto">Weiter →</button>
+    </div>
+  </dialog>
+</body>
+</html>
