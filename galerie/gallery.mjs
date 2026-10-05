@@ -11,15 +11,12 @@ const loginStatus = document.querySelector("#login-status");
 const status = document.querySelector("#gallery-status");
 const grid = document.querySelector("#photo-grid");
 const count = document.querySelector("#photo-count");
-const archive = document.querySelector("#download-all");
 const refresh = document.querySelector("#refresh-gallery");
 const empty = document.querySelector("#empty-gallery");
 const totalSize = document.querySelector("#total-size");
-const archiveSize = document.querySelector("#archive-size");
 const formats = document.querySelector("#photo-formats");
 const sizeRange = document.querySelector("#file-size-range");
 const updated = document.querySelector("#gallery-updated");
-const downloadHelp = document.querySelector("#download-help");
 const viewer = document.querySelector("#photo-viewer");
 const viewerImage = document.querySelector("#viewer-image");
 const sidebar = document.querySelector(".gallery-sidebar");
@@ -126,15 +123,6 @@ async function loadGallery() {
       updated.textContent = new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(updateDate);
     } else { updated.removeAttribute("datetime"); updated.textContent = "—"; }
     empty.hidden = photos.length > 0;
-    archive.hidden = !photos.length || manifest.archive?.path !== "alle-fotos.zip" || !Number.isFinite(manifest.archive?.size) || manifest.archive.size <= 0;
-    archiveSize.textContent = archive.hidden ? "—" : formatBytes(manifest.archive.size);
-    downloadHelp.hidden = archive.hidden;
-    if (!archive.hidden) {
-      const zipURL = new URL("alle-fotos.zip", base);
-      zipURL.searchParams.set("v", manifest.updatedAt || "1");
-      archive.href = zipURL.href;
-      archive.querySelector(".button-note").textContent = `ZIP · ${formatBytes(manifest.archive.size)}`;
-    } else archive.removeAttribute("href");
     status.textContent = "";
   } catch (error) {
     if (error.name !== "AbortError") {
@@ -183,9 +171,6 @@ document.querySelector("#lock-gallery").addEventListener("click", () => {
   gate.hidden = false;
   grid.replaceChildren();
   photos = [];
-  archive.removeAttribute("href");
-  archive.hidden = true;
-  downloadHelp.hidden = true;
   passwordInput.focus();
 });
 refresh.addEventListener("click", loadGallery);
@@ -198,9 +183,6 @@ function showPhoto(index) {
   viewerImage.alt = photo.name;
   document.querySelector("#viewer-counter").textContent = `${currentPhoto + 1} / ${photos.length}`;
   document.querySelector("#viewer-meta").textContent = `${photo.name} · ${photoFormat(photo.name)} · ${formatBytes(photo.size)}`;
-  const link = document.querySelector("#download-photo");
-  link.href = photo.url;
-  link.download = photo.name;
   document.querySelector("#previous-photo").disabled = photos.length < 2;
   document.querySelector("#next-photo").disabled = photos.length < 2;
   if (!viewer.open) viewer.showModal();

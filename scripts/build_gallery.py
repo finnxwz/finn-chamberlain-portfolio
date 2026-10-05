@@ -1,6 +1,7 @@
 """Build the static Pages artifact, photo manifest and downloadable ZIP. No dependencies."""
 
 import argparse
+import csv
 import hashlib
 import json
 import re
@@ -14,8 +15,8 @@ EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 MAX_PHOTO_BYTES = 20 * 1024 * 1024
 MAX_GALLERY_BYTES = 400 * 1024 * 1024
 MAX_SITE_BYTES = 900 * 1024 * 1024
-PUBLIC_FILES = ("index.html", "about.html", "brands.html", "styles.css", "script.js", "CNAME", "robots.txt", "favicon.ico")
-PUBLIC_FOLDERS = ("fotos", "galerie")
+PUBLIC_FILES = ("index.html", "about.html", "brands.html", "contact.html", "legal.html", "impressum.html", "datenschutz.html", "cookie-richtlinie.html", "styles.css", "script.js", "image-protection.js", "foto-daten.csv", "foto-daten.js", "CNAME", "robots.txt", "favicon.ico")
+PUBLIC_FOLDERS = ("fotos", "fonts", "galerie", "resources", "logo")
 UPLOAD_PREFIX = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}__", re.I)
 
 
@@ -30,7 +31,7 @@ def valid_photo(path):
     return extension == ".webp" and signature[:4] == b"RIFF" and signature[8:12] == b"WEBP"
 
 
-def build_gallery(site):
+def build_gallery(site, *, create_archive=True):
     gallery = site / "galerie"
     photos_folder = gallery / "fotos"
     photos_folder.mkdir(parents=True, exist_ok=True)
@@ -62,7 +63,7 @@ def build_gallery(site):
 
     archive_path = gallery / "alle-fotos.zip"
     archive = None
-    if entries:
+    if entries and create_archive:
         # JPEG/PNG/WebP sind bereits komprimiert. ZIP_STORED vermeidet unnötige CPU-Arbeit.
         with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_STORED) as bundle:
             for index, entry in enumerate(entries, start=1):
@@ -98,11 +99,33 @@ def copy_public_tree(source, destination):
             shutil.copy2(path, target)
 
 
+def generate_photo_metadata(root):
+    source = root / "foto-daten.csv"
+    metadata = {}
+    if source.is_file():
+        with source.open(encoding="utf-8-sig", newline="") as stream:
+            reader = csv.DictReader(stream, delimiter=";", strict=True)
+            reader.fieldnames = [name.strip() for name in reader.fieldnames or []]
+            if not {"Dateiname", "Model", "Location"}.issubset(reader.fieldnames or []):
+                raise ValueError("foto-daten.csv benötigt die Spalten Dateiname, Model und Location.")
+            for row in reader:
+                filename = (row.get("Dateiname") or "").strip()
+                if filename:
+                    metadata[filename] = {
+                        "model": (row.get("Model") or "").strip(),
+                        "location": (row.get("Location") or "").strip(),
+                    }
+    script = "// Automatisch aus foto-daten.csv erzeugt. Bitte die CSV bearbeiten.\n"
+    script += "window.FINN_PHOTO_METADATA = " + json.dumps(metadata, ensure_ascii=False, indent=2) + ";\n"
+    (root / "foto-daten.js").write_text(script, encoding="utf-8")
+
+
 def build_site(root, output):
     root, output = root.resolve(), output.resolve()
     # Nur das dafür vorgesehene Build-Verzeichnis darf ersetzt werden.
     if output != root / "_site":
         raise ValueError("Das Ausgabeverzeichnis muss _site direkt im Projektordner sein.")
+    generate_photo_metadata(root)
     output.mkdir(parents=True, exist_ok=True)
     # Das Verzeichnis selbst behalten: Eine laufende lokale Vorschau kann es als cwd verwenden.
     for old in output.iterdir():
@@ -122,11 +145,11 @@ def build_site(root, output):
             if source.is_symlink():
                 raise ValueError(f"Symlink nicht erlaubt: {name}")
             copy_public_tree(source, output / name)
-    manifest = build_gallery(output)
+    manifest = build_gallery(output, create_archive=False)
     published_bytes = sum(path.stat().st_size for path in output.rglob("*") if path.is_file())
     if published_bytes > MAX_SITE_BYTES:
         raise ValueError("Die erzeugte Webseite ist größer als 900 MB. Bitte die Bildauswahl verkleinern.")
-    print(f"Pages-Build: {len(manifest['photos'])} Galeriefotos, {published_bytes / 1024 / 1024:.1f} MB inklusive ZIP.")
+    print(f"Pages-Build: {len(manifest['photos'])} Galeriefotos, {published_bytes / 1024 / 1024:.1f} MB, ohne öffentliche ZIP-Downloads.")
     return manifest
 
 

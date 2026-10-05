@@ -32,7 +32,7 @@ jobs:
         run: python -m unittest discover -s scripts -p 'test_*.py'
       - name: Test upload logic
         run: node --test scripts/gallery.test.mjs
-      - name: Build website and ZIP
+      - name: Build website
         run: python scripts/build_gallery.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
