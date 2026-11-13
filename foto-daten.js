@@ -19,5 +19,9 @@ window.FINN_PHOTO_METADATA = {
   "DSC01395-fertig.jpg": {
     "model": "Ines",
     "location": "Schloss Orangerie, Kassel"
+  },
+  "ines-orangerie-007.jpg": {
+    "model": "Ines",
+    "location": "Schloss Orangerie, Kassel"
   }
 };
